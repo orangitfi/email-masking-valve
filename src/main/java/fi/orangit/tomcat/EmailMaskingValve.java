@@ -2,7 +2,6 @@ package fi.orangit.tomcat;
 
 import org.apache.catalina.valves.AccessLogValve;
 
-import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,7 +11,20 @@ public class EmailMaskingValve extends AccessLogValve {
 
     public EmailMaskingValve() {}
 
-    protected String maskEmail(String message) throws IOException {
+    @Override
+    public void log(String message) {
+        try {
+            logEntry(maskEmail(message));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logEntry(String maskedMessage) {
+        super.log(maskedMessage);
+    }
+
+    private String maskEmail(String message) throws IOException {
         StringBuilder sb = new StringBuilder(message);
         Pattern pattern = Pattern.compile("(\\w+([-+.']\\w+)*(@|%40)\\w+\\.\\w+)");
         Matcher matcher = pattern.matcher(sb);
@@ -30,15 +42,5 @@ public class EmailMaskingValve extends AccessLogValve {
             });
         }
         return sb.toString();
-    }
-
-    @Override
-    public void log(String message) {
-        try {
-            String maskedMessage = maskEmail(message);
-            super.log(maskedMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
