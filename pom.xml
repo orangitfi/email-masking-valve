@@ -10,7 +10,7 @@
     <name>email-masking-valve</name>
 
     <properties>
-        <catalina.version>7.0.107</catalina.version>
+        <catalina.version>11.0.0</catalina.version>
         <version.maven.jar.plugin>3.2.0</version.maven.jar.plugin>
     </properties>
 
